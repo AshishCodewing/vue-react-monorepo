@@ -1,0 +1,24 @@
+# Node modules and build artifacts
+node_modules/
+dist/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Output from React build copied to Vue public
+packages/vue-dashboard/public/react-builder/
+
+# Editor junk
+.DS_Store
+.idea/
+.vscode/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# OS generated files
+Thumbs.db
