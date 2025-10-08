@@ -17,14 +17,15 @@ laravel-vue-react-monorepo/
 
 ### React Builder (`packages/react-builder/`)
 - **Purpose**: A React-based page builder component library
-- **Build Output**: UMD library that can be consumed by other applications
+- **Build Output**: ES Module library that can be consumed by other applications
 - **Technology**: React 19, TypeScript, Vite
-- **Output**: `page-builder.umd.js` and `react-builder.css`
+- **Output**: `page-builder.es.js` and `react-builder.css`
+- **Module Format**: ESM (ES Modules) for modern bundlers
 
 ### Vue Dashboard (`packages/vue-dashboard/`)
 - **Purpose**: Main dashboard application built with Vue.js
 - **Technology**: Vue 3, TypeScript, Vite
-- **Integration**: Consumes the React Builder as a library
+- **Integration**: Consumes the React Builder as a workspace dependency
 
 ## 🚀 Prerequisites
 
@@ -59,6 +60,31 @@ git --version
    - Root workspace
    - React Builder package
    - Vue Dashboard package
+
+## 🔗 How It Works
+
+The React Builder is packaged as an ES Module and consumed by the Vue Dashboard through workspace dependencies:
+
+```typescript
+// In Vue Dashboard (App.vue)
+import PageBuilder from 'react-builder';        // Import the library
+import 'react-builder/style.css';               // Import the styles
+
+// Use the builder
+PageBuilder.render({
+  containerId: "page-builder",
+  onChange: (data) => {
+    console.log("Data from React:", data);
+  },
+});
+```
+
+**Benefits of this approach:**
+- ✅ Modern ES modules for better performance
+- ✅ Tree-shaking support for smaller bundles
+- ✅ TypeScript support out of the box
+- ✅ No manual file copying needed
+- ✅ Vite handles bundling automatically
 
 ## 🏃‍♂️ Running the Project
 
@@ -100,9 +126,8 @@ npm run build
 
 This will:
 - Compile TypeScript
-- Build the UMD library
-- Copy built files to Vue Dashboard's public folder
-- Generate: `page-builder.umd.js` and `react-builder.css`
+- Build the ES Module library
+- Generate: `page-builder.es.js` and `react-builder.css` in the `dist/` folder
 
 #### Build Vue Dashboard
 ```bash
@@ -134,31 +159,34 @@ npm run preview
 ### 1. React Builder Development
 1. Navigate to `packages/react-builder`
 2. Make changes to React components
-3. Run `npm run dev` for hot reload
-4. Run `npm run build` to create library build
-5. Built files are automatically copied to Vue Dashboard
+3. Run `npm run dev` for hot reload development
+4. Run `npm run build` to create ES module library build
+5. The Vue Dashboard will automatically pick up changes via workspace linking
 
 ### 2. Vue Dashboard Development
 1. Navigate to `packages/vue-dashboard`
 2. Make changes to Vue components
 3. Run `npm run dev` for hot reload
-4. The dashboard can consume the React Builder library
+4. The dashboard imports React Builder as a workspace dependency
+5. Use ES module imports: `import PageBuilder from 'react-builder'`
 
 ### 3. Integration Testing
 1. Build the React Builder: `npm run build` (in react-builder)
 2. Start Vue Dashboard: `npm run dev` (in vue-dashboard)
 3. Test the integration between Vue and React components
+4. Changes to React Builder require rebuild, then refresh Vue Dashboard
 
 ## 📁 Key Files
 
 ### React Builder
-- `src/main.tsx` - Entry point for the React library
-- `vite.config.ts` - Vite configuration for UMD library build
-- `dist/` - Built library files
+- `src/main.tsx` - Entry point that exports the library
+- `vite.config.ts` - Vite configuration for ES module library build
+- `package.json` - Package configuration with exports and module fields
+- `dist/` - Built ES module library files
 
 ### Vue Dashboard
-- `src/App.vue` - Main Vue application
-- `public/react-builder/` - Contains the built React library files
+- `src/App.vue` - Main Vue application that imports React Builder
+- `package.json` - Includes react-builder as workspace dependency
 - `vite.config.ts` - Vite configuration for Vue app
 
 ## 🛠️ Available Scripts
@@ -172,9 +200,7 @@ npm run test         # Run tests (when implemented)
 ### React Builder
 ```bash
 npm run dev          # Start development server
-npm run build        # Build library + copy to Vue Dashboard
-npm run build:only   # Build library only
-npm run copy         # Copy built files to Vue Dashboard
+npm run build        # Build ES module library
 npm run lint         # Run ESLint
 npm run preview      # Preview production build
 ```
@@ -190,10 +216,11 @@ npm run preview      # Preview production build
 
 ### Common Issues
 
-1. **Port conflicts**: If ports 5173 are in use, Vite will automatically use the next available port
-2. **Build errors**: Ensure all dependencies are installed with `npm install`
+1. **Port conflicts**: If port 5173 is in use, Vite will automatically use the next available port
+2. **Build errors**: Ensure all dependencies are installed with `npm install` from the root
 3. **TypeScript errors**: Run `npm run build` to check for compilation errors
-4. **Missing React Builder files**: Run `npm run build` in the react-builder package first
+4. **Workspace linking issues**: Run `npm install` from the root to ensure workspace dependencies are linked correctly
+5. **React Builder not found**: Ensure you've run `npm run build` in the react-builder package first
 
 ### Reset Everything
 ```bash
@@ -204,10 +231,12 @@ npm install
 
 ## 🏗️ Architecture Notes
 
-- **Monorepo**: Uses npm workspaces for dependency management
-- **Library Integration**: React Builder is built as a UMD library and consumed by Vue Dashboard
-- **Build Pipeline**: React Builder files are automatically copied to Vue Dashboard during build
-- **Development**: Each package can be developed independently
+- **Monorepo**: Uses npm workspaces for dependency management and package linking
+- **Library Integration**: React Builder is built as an ES Module library and consumed by Vue Dashboard as a workspace dependency
+- **Module Format**: Uses modern ES modules for better tree-shaking and bundler optimization
+- **Workspace Dependencies**: React Builder is imported directly as `import PageBuilder from 'react-builder'`
+- **Externalization**: React and React-DOM are externalized from the builder and included in the Vue Dashboard
+- **Development**: Each package can be developed independently with hot reload
 - **Production**: Both packages are built separately and can be deployed independently
 
 ## 📚 Technologies Used

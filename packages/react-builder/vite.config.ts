@@ -14,10 +14,10 @@ export default defineConfig({
       entry: path.resolve(__dirname, "src/main.tsx"),
       name: "PageBuilder",
       fileName: (format) => `page-builder.${format}.js`,
-      formats: ["umd"], // so it can be loaded via <script>
+      formats: ["es"], // ESM format for modern bundlers
     },
     rollupOptions: {
-      external: [], // you can externalize React if needed
+      external: ['react', 'react-dom'], // externalize React dependencies
     },
   },
 });

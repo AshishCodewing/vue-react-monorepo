@@ -3,11 +3,17 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "main": "./dist/page-builder.es.js",
+  "module": "./dist/page-builder.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/page-builder.es.js"
+    },
+    "./style.css": "./dist/react-builder.css"
+  },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && npm run copy",
-    "build:only": "tsc -b && vite build",
-    "copy": "mkdir -p ../vue-dashboard/public/react-builder && cp dist/page-builder.umd.js dist/react-builder.css ../vue-dashboard/public/react-builder/ && cp dist/react-builder.css ../vue-dashboard/public/react-builder/page-builder.css",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

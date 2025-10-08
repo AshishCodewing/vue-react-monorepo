@@ -1,24 +1,24 @@
 <script setup lang="ts">
+// ES module imports - clean and modern!
+// @ts-ignore - Workspace package import
+import PageBuilder from 'react-builder';
+// Import the CSS for the React builder
+import 'react-builder/style.css';
 
 function loadReactBuilder() {
-  const script = document.createElement("script");
-  script.src = "/react-builder/page-builder.umd.js"; // built React bundle path
-  script.onload = () => {
-    // @ts-ignore
-    PageBuilder.render({
-      containerId: "page-builder",
-      onChange: (data: any) => {
-        console.log("Data from React:", data);
-      },
-    });
-  };
-  document.body.appendChild(script);
-
-  const link = document.createElement("link");
-  link.rel = "stylesheet";
-  link.href = "/react-builder/page-builder.css";
-  document.head.appendChild(link);
+  PageBuilder.render({
+    containerId: "page-builder",
+    onChange: (data: any) => {
+      console.log("Data from React:", data);
+    },
+  });
 }
+
+// Tip: To auto-load on mount, uncomment this:
+// import { onMounted } from 'vue';
+// onMounted(() => {
+//   loadReactBuilder();
+// });
 </script>
 
 <template>
